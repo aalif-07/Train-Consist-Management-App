@@ -1,29 +1,41 @@
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
+// UC7: Supporting Class for Object-based collection handling
+class Bogie {
+    String name;
+    int capacity;
+
+    Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+
+    @Override
+    public String toString() {
+        return "Bogie: " + name + " (Capacity: " + capacity + ")";
+    }
+}
 
 public class TrainApp {
     public static void main(String[] args) {
 
         // --- UC1: Initialize Train ---
         System.out.println("=== Train Consist Management App ===");
-        List<String> passengerBogies = new ArrayList<>();
-        System.out.println("Initial Bogie Count: " + passengerBogies.size());
+        List<String> simpleBogies = new ArrayList<>();
+        System.out.println("Initial Bogie Count: " + simpleBogies.size());
 
 
-        // --- UC2: ArrayList Operations (Dynamic CRUD) ---
+        // --- UC2: ArrayList Operations ---
         System.out.println("\n--- UC2: Managing Passenger Bogies ---");
-        passengerBogies.add("Sleeper");
-        passengerBogies.add("AC Chair");
-        passengerBogies.add("First Class");
-        passengerBogies.remove("AC Chair");
-        System.out.println("Current Bogie List: " + passengerBogies);
+        simpleBogies.add("Sleeper");
+        simpleBogies.add("AC Chair");
+        simpleBogies.add("First Class");
+        simpleBogies.remove("AC Chair");
+        System.out.println("Current Bogie List: " + simpleBogies);
 
 
-        // --- UC3: HashSet (Unique Bogie IDs) ---
+        // --- UC3: HashSet (Unique IDs) ---
         System.out.println("\n--- UC3: Registering Unique Bogie IDs ---");
         Set<String> bogieIds = new HashSet<>();
         bogieIds.add("BG101");
@@ -33,29 +45,68 @@ public class TrainApp {
 
 
         // --- UC4: LinkedList (Physical Chaining) ---
-        System.out.println("\n--- UC4: Physical Train Chaining (LinkedList) ---");
+        System.out.println("\n--- UC4: Physical Train Chaining ---");
         LinkedList<String> trainSequence = new LinkedList<>();
         trainSequence.add("Engine");
         trainSequence.add("Sleeper");
         trainSequence.add("Cargo");
-        trainSequence.add(1, "Pantry Car"); // Insert in middle
+        trainSequence.add(1, "Pantry Car");
         System.out.println("Ordered Sequence: " + trainSequence);
 
 
         // --- UC5: LinkedHashSet (Ordered Uniqueness) ---
-        System.out.println("\n--- UC5: Preserve Insertion Order (LinkedHashSet) ---");
-
+        System.out.println("\n--- UC5: Preserve Insertion Order ---");
         Set<String> trainFormation = new LinkedHashSet<>();
-
         trainFormation.add("Engine");
         trainFormation.add("Sleeper");
         trainFormation.add("Cargo");
         trainFormation.add("Guard");
-
-        System.out.println("Attempting to re-attach duplicate: Sleeper...");
-        trainFormation.add("Sleeper");
-
         System.out.println("Final Formation Order: " + trainFormation);
-        System.out.println("Integrity Check: No duplicates allowed, order preserved.");
+
+
+        // --- UC6: HashMap (Mapping Bogie to Capacity) ---
+        System.out.println("\n--- UC6: Bogie Capacity Mapping (HashMap) ---");
+        Map<String, Integer> bogieCapacityMap = new HashMap<>();
+        bogieCapacityMap.put("Sleeper", 72);
+        bogieCapacityMap.put("AC Chair", 56);
+        bogieCapacityMap.put("First Class", 24);
+
+        for (Map.Entry<String, Integer> entry : bogieCapacityMap.entrySet()) {
+            System.out.println("Bogie Type: " + entry.getKey() + " | Seats: " + entry.getValue());
+        }
+
+
+        // --- UC7: Sort Bogies by Capacity (Comparator) ---
+        System.out.println("\n--- UC7: Sorting Bogies by Capacity (Comparator) ---");
+
+        List<Bogie> passengerBogies = new ArrayList<>();
+        passengerBogies.add(new Bogie("Sleeper", 72));
+        passengerBogies.add(new Bogie("AC Chair", 56));
+        passengerBogies.add(new Bogie("First Class", 24));
+
+        passengerBogies.sort(Comparator.comparingInt(b -> b.capacity));
+
+        System.out.println("Bogies Sorted by Capacity (Low to High):");
+        for (Bogie b : passengerBogies) {
+            System.out.println(b);
+        }
+
+
+        // --- UC8: Filter Passenger Bogies Using Streams ---
+        System.out.println("\n--- UC8: Filter Bogies (Capacity > 60) Using Streams ---");
+
+        List<Bogie> filteredBogies = passengerBogies.stream()
+                .filter(b -> b.capacity > 60)
+                .collect(Collectors.toList());
+
+        System.out.println("Filtered Bogies (High Capacity Only):");
+        if (filteredBogies.isEmpty()) {
+            System.out.println("No bogies match the criteria.");
+        } else {
+            filteredBogies.forEach(System.out::println);
+        }
+
+        System.out.println("\nFiltering complete. Original collection remains unchanged.");
+        System.out.println("Operational planning complete. Program continues...");
     }
 }
